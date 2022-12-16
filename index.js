@@ -1,23 +1,44 @@
-let div = document.getElementById("container-cards")
 let events = data.events
+
+console.log(events )
+
+let div = document.getElementById("container-cards")
 div.innerHTML = ``
 
+let categoryConteiner = document.getElementById("form")
+
+let categorias = (Array.from (new Set(events.map(elemento => elemento.category))))
+
+categorias.forEach((element) => {
+  categoryConteiner.innerHTML += `<label class="text-white m-2" for="${element}">${element}</label>
+  <input type="checkbox" name="category" onchange="filterList('${element}')" value="${element}" id="${element}">`
+})
+
+let filterCategory = []
+
+function addList(){
+    let arrayEvents = events.map((element) => {
+        let includeCategory = filterCategory.includes(element.category)  
+        if(!includeCategory && filterCategory.length > 0) return
+
+         return `<div class="card card-pastEvents col-md-3 m-3">
+        <img src="${element.image}" alt="books">
+        <h2>${element.name}</h2>   
+        <p>${element.description}</p>
+        <div class="item-card">
+          <p>$${element.price}</p>
+          <a href="./details.html?id=${element._id}" class="btn btn-primary">View more</a>
+        </div>
+      </div>`
+      })
+      div.innerHTML = arrayEvents
+}
+addList()
 
 
+function filterList(e){
+    let includesCategory = filterCategory.includes(e)
+    includesCategory ? filterCategory = filterCategory.filter(item => item !== e) : filterCategory.push(e)
+    addList()
+}
 
-function insertEvents(events){
-     for(let event of events){
-         div.innerHTML += `<div class="card card-pastEvents col-md-3 m-3">
-         <img src="${event.image}" alt="books">
-         <h2>${event.name}</h2>   
-         <p>${event.description}</p>
-         <div class="item-card">
-           <p>${event.price}</p>
-           <input type="button" value="ver más">
-         </div>
-       </div>`
-     }
-   
-   }
-
-   insertEvents(events);
